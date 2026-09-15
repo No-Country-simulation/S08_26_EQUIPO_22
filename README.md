@@ -1,31 +1,54 @@
-# 📈PredictiveMaintenance — Sistema de Mantenimiento Predictivo Industrial
+# PredictiveMaintenance — Sistema de Mantenimiento Predictivo Industrial
 
-## Project overview
+## Resumen del proyecto
+<p align="justify"> 
+PredictiveMaintenance es una solución de mantenimiento predictivo industrial que utiliza datos de sensores, historial de mantenimiento y modelos de análisis predictivo para detectar señales de deterioro en máquinas y anticipar posibles fallas. El sistema permite identificar equipos de mayor riesgo, priorizar intervenciones y planificar mantenimientos antes de que ocurran paradas inesperadas, reduciendo costos, tiempos de inactividad y pérdidas de producción. 
+<p>
 
-## Bussines problem
+## Problema
+<p align="justify"> 
+La estrategia actual de mantenimiento dificulta anticiparse al comportamiento real de las máquinas y puede generar costos tanto por exceso como por falta de mantenimiento. 
+</p>
 
-## Objectives
+## Objectivos
+- Convertir los datos registrados por los sensores, así como la información de registros históricos, en un modelo capaz de identificar patrones de deterioro y anticipar posibles fallas.
+- Transformar datos en una herramienta para la toma de decisiones del área de mantenimiento, ayudando a la planificación de servicios de la maquinaria, y evitando gastos innecesarios en mantenimiento y paradas inesperadas. 
 
 ## Dataset 
+### Fuente de los datos
 
-## Data Exploratory Analysis
+El dataset utilizado en este proyecto es **MGG001 Sample Dataset**, disponible en Hugging Face: [MGG001 Sample Dataset](https://huggingface.co/datasets/xpertsystems/mgg001-sample)
 
-## Data Preparation
+### Características del dataset
 
-## Visualizations
+- **Fuente:** Hugging Face
+- **Dataset:** MGG001 Sample Dataset
+- **Número de registros:** [ ]
+- **Número de variables:** [ ]
+- **Variable objetivo:** [ ]
+- **Tipo de datos:** [ ]
 
-## Predictive Modeling
+### Uso de los datos
 
-## Evaluation Metrics
+Los datos serán utilizados para realizar análisis exploratorio, limpieza y transformación de datos, análisis de variables y modelado predictivo, con el objetivo de identificar patrones relacionados con el estado de los equipos y anticipar posibles fallas.
 
-## Results
+## Análisis Exploratorio de Datos
 
-## Bussines Insights
+## Preparación y Limpieza de Datos
 
-## Technologies
+## Visualizaciones Clave
 
-## Project Structure
+## Modelo Predictivo 
 
+## Métricas de Evaluación
+
+## Resultados
+
+## Hallazgos
+
+## Tecnologías
+
+## Estructura del Proyecto
 
 # Team
 Jorge Reynoso - Data Analyst/Data Scientist
