@@ -28,5 +28,4 @@
 
 
 # Team
-
-## Jorge Reynoso / Data Analyst
+Jorge Reynoso - Data Analyst/Data Scientist
