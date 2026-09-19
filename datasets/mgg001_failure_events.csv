@@ -1,0 +1,2 @@
+asset_id,failure_timestamp,fault_mode,fault_onset_timestamp,days_from_onset_to_failure,asset_type,criticality_class
+ASSET-CNC-0009,2026-05-17T07:14:38,mechanical_looseness,2026-04-19T07:14:38,28.0,cnc_machining_center,important_production
