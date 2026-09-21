@@ -32,4 +32,32 @@ machine learning models and large language models for intelligent fault detectio
 
 <img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge">
 
+<table>
+<tr>
+
+<td width="50%">
+
+<h2>Industrial Challenge</h2>
+
+<p>
+Industrial equipment generates thousands of sensor measurements,
+but detecting degradation before failure requires advanced analytics.
+</p>
+
+</td>
+
+<td width="50%">
+
+<h2>AI Solution</h2>
+
+<p>
+A predictive maintenance pipeline capable of identifying anomalies
+and generating intelligent explanations using LLM technology.
+</p>
+
+</td>
+
+</tr>
+</table>
+
 </div>
