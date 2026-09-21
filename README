@@ -1,1 +1,46 @@
+# PredictiveMaintenance 🚀
+
+## 📌 Descripción del Proyecto
+
+PredictiveMaintenance es una solución de mantenimiento predictivo industrial orientada a detectar señales tempranas de deterioro en máquinas y anticipar posibles fallas antes de que ocurran.
+
+El sistema utiliza información proveniente de sensores industriales, registros históricos de mantenimiento y modelos de análisis predictivo para identificar equipos con mayor nivel de riesgo, priorizar intervenciones y mejorar la planificación del mantenimiento.
+
+El objetivo principal es transformar los datos generados por las máquinas en información útil para la toma de decisiones, reduciendo:
+
+- Paradas inesperadas de producción.
+- Costos de reparación.
+- Tiempos de inactividad.
+- Intervenciones innecesarias.
+
+La solución busca pasar de un mantenimiento reactivo:
+
+> Máquina falla → Producción se detiene → Se realiza reparación
+
+a un mantenimiento predictivo:
+
+> Datos indican deterioro → Se detecta riesgo → Se programa intervención
+
+---
+
+# 🎯 Problema que resuelve
+
+Actualmente muchas organizaciones utilizan mantenimiento preventivo basado en calendario o mantenimiento correctivo después de una falla.
+
+Estos enfoques presentan limitaciones porque:
+
+- Una máquina puede fallar sin una alerta previa.
+- Se realizan mantenimientos antes de ser realmente necesarios.
+- Los datos de sensores pueden ser difíciles de interpretar.
+- La información histórica de fallas y reparaciones puede estar desconectada.
+
+PredictiveMaintenance busca responder:
+
+**¿Qué máquinas presentan señales de deterioro, qué probabilidad existe de que fallen y cuándo sería conveniente intervenir para evitar una parada inesperada?**
+
+---
+
+# ⚙️ Funcionamiento general
+
+El flujo del sistema es:
 
