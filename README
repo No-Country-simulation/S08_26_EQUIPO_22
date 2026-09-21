@@ -1,14 +1,13 @@
 <div align="center">
 
-# ⚙️ Industrial AI Predictive Maintenance
+<img src="./assets/banner_industrial_ai.png" width="100%">
 
-### Sistema inteligente para detección temprana de anomalías industriales
+<h1>
+⚙️ Industrial AI Predictive Maintenance
+</h1>
+
+<h3>
+Sistema inteligente para detección temprana de anomalías industriales
+</h3>
 
 </div>
-
-
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Random%20Forest-green)
-![LangChain](https://img.shields.io/badge/LangChain-LLM-orange)
-![DeepSeek](https://img.shields.io/badge/DeepSeek-AI-purple)
-![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red)
