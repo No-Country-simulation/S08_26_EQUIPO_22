@@ -1,46 +1,392 @@
-# PredictiveMaintenance 🚀
+<div align="center">
 
-## 📌 Descripción del Proyecto
+# ⚙️ Industrial AI Predictive Maintenance
 
-PredictiveMaintenance es una solución de mantenimiento predictivo industrial orientada a detectar señales tempranas de deterioro en máquinas y anticipar posibles fallas antes de que ocurran.
+## Sistema inteligente para detección temprana de anomalías en equipos industriales mediante Machine Learning y modelos de lenguaje
 
-El sistema utiliza información proveniente de sensores industriales, registros históricos de mantenimiento y modelos de análisis predictivo para identificar equipos con mayor nivel de riesgo, priorizar intervenciones y mejorar la planificación del mantenimiento.
+<br>
 
-El objetivo principal es transformar los datos generados por las máquinas en información útil para la toma de decisiones, reduciendo:
+<img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python">
+<img src="https://img.shields.io/badge/Machine%20Learning-Random%20Forest-green?style=for-the-badge">
+<img src="https://img.shields.io/badge/LangChain-LLM-orange?style=for-the-badge">
+<img src="https://img.shields.io/badge/DeepSeek-AI-purple?style=for-the-badge">
+<img src="https://img.shields.io/badge/Streamlit-Dashboard-red?style=for-the-badge">
 
-- Paradas inesperadas de producción.
-- Costos de reparación.
-- Tiempos de inactividad.
-- Intervenciones innecesarias.
+</div>
 
-La solución busca pasar de un mantenimiento reactivo:
-
-> Máquina falla → Producción se detiene → Se realiza reparación
-
-a un mantenimiento predictivo:
-
-> Datos indican deterioro → Se detecta riesgo → Se programa intervención
 
 ---
 
-# 🎯 Problema que resuelve
+# 🏭 Descripción del proyecto
 
-Actualmente muchas organizaciones utilizan mantenimiento preventivo basado en calendario o mantenimiento correctivo después de una falla.
+La industria moderna genera grandes volúmenes de información provenientes de sensores instalados en equipos críticos. Sin embargo, transformar estos datos en decisiones de mantenimiento oportunas continúa siendo un reto.
 
-Estos enfoques presentan limitaciones porque:
+Este proyecto desarrolla una solución basada en **Inteligencia Artificial aplicada al mantenimiento predictivo**, capaz de analizar variables operacionales de equipos industriales para identificar patrones asociados a condiciones anómalas.
 
-- Una máquina puede fallar sin una alerta previa.
-- Se realizan mantenimientos antes de ser realmente necesarios.
-- Los datos de sensores pueden ser difíciles de interpretar.
-- La información histórica de fallas y reparaciones puede estar desconectada.
+La solución combina:
 
-PredictiveMaintenance busca responder:
+- Análisis exploratorio de datos industriales.
+- Ingeniería de variables.
+- Modelos de Machine Learning.
+- Modelos de lenguaje mediante LangChain y DeepSeek.
+- Visualización interactiva con Streamlit.
 
-**¿Qué máquinas presentan señales de deterioro, qué probabilidad existe de que fallen y cuándo sería conveniente intervenir para evitar una parada inesperada?**
+El objetivo es evolucionar desde una detección tradicional de fallas hacia un sistema capaz de **anticipar riesgos y explicar las causas probables del comportamiento anómalo del equipo**.
+
 
 ---
 
-# ⚙️ Funcionamiento general
+# 🎯 Objetivo general
 
-El flujo del sistema es:
+Construir un sistema inteligente que permita detectar condiciones anómalas en equipos industriales mediante el análisis de datos históricos y variables provenientes de sensores.
 
+
+---
+
+# ⚙️ Caso de uso industrial
+
+El sistema analiza equipos rotativos considerando diferentes fuentes de información:
+
+<div align="center">
+
+| Dominio | Variables analizadas |
+|---|---|
+| 🌡️ Térmico | Temperaturas, gradientes térmicos, carga térmica |
+| 📈 Vibración | RMS, kurtosis, amplitudes de frecuencia |
+| ⚡ Eléctrico | Corriente, potencia, eficiencia, desbalance |
+| 💧 Hidráulico | Presión, flujo, cavitación |
+| 🛢️ Lubricación | Viscosidad, contaminación, horas de lubricación |
+
+</div>
+
+
+---
+
+# 🧠 Arquitectura conceptual
+
+```mermaid
+flowchart TD
+
+A[Sensores industriales] --> B[Captura de datos]
+B --> C[Data Processing]
+C --> D[Exploración y análisis EDA]
+
+D --> E[Ingeniería de variables]
+
+E --> F[Modelo Machine Learning]
+
+F --> G{Detección anomalía}
+
+G -->|Normal| H[Operación estable]
+
+G -->|Anomalía| I[Análisis inteligente]
+
+I --> J[LangChain + DeepSeek]
+
+J --> K[Explicación del diagnóstico]
+
+K --> L[Dashboard Streamlit]
+```
+
+
+---
+
+# 📊 Fuente de datos
+
+El proyecto utiliza el dataset industrial:
+
+```
+xpertsystems/mgg001-sample
+```
+
+Disponible en Hugging Face.
+
+El conjunto está compuesto por tres fuentes principales:
+
+| Archivo | Descripción |
+|---|---|
+| Equipment Registry | Información maestra de activos |
+| Sensor Data | Mediciones operacionales de sensores |
+| Failure Events | Historial de eventos de falla |
+
+
+---
+
+# 🔗 Modelo relacional inicial
+
+Las relaciones encontradas permiten integrar la información operacional del activo.
+
+
+```mermaid
+erDiagram
+
+EQUIPMENT_REGISTRY ||--o{ SENSOR_DATA : contains
+
+EQUIPMENT_REGISTRY ||--o{ FAILURE_EVENTS : registers
+
+EQUIPMENT_REGISTRY {
+    string asset_id
+    string plant_id
+    string asset_type
+    string manufacturer
+}
+
+SENSOR_DATA {
+    string asset_id
+    datetime observation_timestamp
+    float temperature
+    float vibration
+    float pressure
+}
+
+FAILURE_EVENTS {
+    string asset_id
+    string failure_mode
+    string severity
+}
+```
+
+
+---
+
+# 🔎 Exploración inicial del dataset (EDA)
+
+Durante la fase exploratoria se realizaron:
+
+✅ Carga y validación de datos industriales.  
+✅ Identificación de relaciones entre datasets.  
+✅ Análisis de variables operacionales.  
+✅ Construcción de matriz analítica.  
+✅ Selección inicial de variables predictoras.  
+✅ Definición de hipótesis del modelo.
+
+
+Notebook disponible:
+
+```
+notebooks/EDA_MGG001.ipynb
+```
+
+
+---
+
+# 🧪 Construcción de la matriz de aprendizaje
+
+Se creó una matriz final compuesta por:
+
+```
+12.960 observaciones
+25 variables predictoras
+1 variable objetivo
+```
+
+
+Variables utilizadas:
+
+- Temperatura de rodamientos.
+- Temperatura del motor.
+- Gradientes térmicos.
+- Vibración mecánica.
+- Presión diferencial.
+- Variables eléctricas.
+- Condiciones de lubricación.
+- Variables de eficiencia.
+
+
+Variable objetivo:
+
+```
+anomaly_label
+```
+
+
+Clasificación:
+
+```
+0 → Condición operacional normal
+
+1 → Condición anómala
+```
+
+
+---
+
+# 💡 Primera hipótesis del modelo
+
+> Las variables físicas capturadas por los sensores industriales contienen patrones suficientes para diferenciar el comportamiento normal del equipo frente a una condición anómala.
+
+
+El modelo busca responder:
+
+**¿El comportamiento actual del equipo presenta señales asociadas a una condición anormal?**
+
+
+---
+
+# 🤖 Modelo Machine Learning
+
+## Primera aproximación
+
+Modelo seleccionado:
+
+```
+Random Forest Classifier
+```
+
+
+¿Por qué?
+
+- Maneja relaciones no lineales.
+- Funciona bien con datos industriales.
+- Permite interpretar importancia de variables.
+- Es adecuado para una primera línea base.
+
+
+Flujo:
+
+```
+Datos sensores
+
+      ↓
+
+Preprocesamiento
+
+      ↓
+
+Modelo clasificación
+
+      ↓
+
+Predicción anomalía
+
+      ↓
+
+Variables críticas
+
+      ↓
+
+Explicación mediante LLM
+```
+
+
+---
+
+# 🧩 Integración futura con LLM
+
+La arquitectura final busca combinar Machine Learning con modelos de lenguaje.
+
+
+Ejemplo:
+
+Modelo ML:
+
+```
+Anomalía detectada = Sí
+```
+
+Variables relevantes:
+
+```
+↑ Vibración RMS
+↑ Temperatura rodamiento
+↑ Desbalance corriente
+```
+
+
+LLM:
+
+> "El equipo presenta una condición anómala posiblemente asociada a incremento de vibración y temperatura del rodamiento. Se recomienda inspección mecánica preventiva."
+
+
+---
+
+# 🛠️ Tecnologías utilizadas
+
+<div align="center">
+
+| Tecnología | Uso |
+|-|-|
+| Python | Desarrollo principal |
+| Pandas | Manipulación de datos |
+| Scikit-Learn | Machine Learning |
+| Jupyter Notebook | Experimentación |
+| Hugging Face | Fuente dataset |
+| LangChain | Orquestación LLM |
+| DeepSeek | Modelo lenguaje |
+| Streamlit | Interfaz web |
+
+</div>
+
+
+---
+
+# 📁 Estructura del proyecto
+
+
+```
+S08_26_EQUIPO_22
+
+│
+├── README.md
+│
+├── notebooks
+│   └── EDA_MGG001.ipynb
+│
+├── data
+│
+├── models
+│
+└── src
+```
+
+
+---
+
+# 🚀 Roadmap del proyecto
+
+## Fase 1 - Análisis del dato
+
+✅ Carga datasets  
+✅ Análisis exploratorio  
+✅ Relaciones entre tablas  
+✅ Ingeniería inicial de variables  
+
+
+## Fase 2 - Machine Learning
+
+⬜ Entrenamiento modelo clasificación  
+⬜ Evaluación métricas  
+⬜ Optimización del modelo  
+⬜ Interpretabilidad del modelo  
+
+
+## Fase 3 - Inteligencia artificial generativa
+
+⬜ Integración LangChain  
+⬜ Integración DeepSeek  
+⬜ Generación automática de diagnóstico  
+
+
+## Fase 4 - Producto final
+
+⬜ Dashboard Streamlit  
+⬜ Monitoreo interactivo  
+⬜ Sistema de recomendaciones
+
+
+---
+
+# 👨‍💻 Equipo
+
+<div align="center">
+
+Proyecto desarrollado dentro de:
+
+## S08_26_EQUIPO_22
+
+Inteligencia Artificial aplicada a procesos industriales
+
+</div>
+
+
+---
