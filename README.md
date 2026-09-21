@@ -60,4 +60,29 @@ and generating intelligent explanations using LLM technology.
 </tr>
 </table>
 
+<h2>Dataset Overview</h2>
+
+<table>
+<tr>
+<th>Source</th>
+<th>Description</th>
+</tr>
+
+<tr>
+<td>Equipment Registry</td>
+<td>Industrial asset information</td>
+</tr>
+
+<tr>
+<td>Sensor Data</td>
+<td>Temperature, vibration, pressure and electrical measurements</td>
+</tr>
+
+<tr>
+<td>Failure Events</td>
+<td>Historical failure conditions</td>
+</tr>
+
+</table>
+
 </div>
