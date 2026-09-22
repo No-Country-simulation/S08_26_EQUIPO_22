@@ -1,14 +1,20 @@
 import pandas as pd
+import joblib
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import (
+    classification_report,
+    confusion_matrix,
+    accuracy_score
+)
 
 
 def train_anomaly_model(data_path):
 
     """
-    Entrena un modelo para detectar anomalías
+    Entrena un modelo Random Forest para detectar anomalías
     en equipos industriales.
 
     Entrada:
@@ -19,11 +25,16 @@ def train_anomaly_model(data_path):
     """
 
 
+    # ==========================
     # Cargar dataset procesado
+    # ==========================
+
     df = pd.read_parquet(data_path)
 
 
-    # Separar variables predictoras y objetivo
+    # ==========================
+    # Separar variables
+    # ==========================
 
     X = df.drop(
         columns=["anomaly_label"]
@@ -32,7 +43,15 @@ def train_anomaly_model(data_path):
     y = df["anomaly_label"]
 
 
-    # División entrenamiento / prueba
+    # Guardamos nombres de variables
+    # para futuras predicciones
+
+    feature_names = X.columns.tolist()
+
+
+    # ==========================
+    # División entrenamiento/prueba
+    # ==========================
 
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -43,7 +62,9 @@ def train_anomaly_model(data_path):
     )
 
 
-    # Modelo inicial
+    # ==========================
+    # Crear modelo
+    # ==========================
 
     model = RandomForestClassifier(
         n_estimators=100,
@@ -52,7 +73,9 @@ def train_anomaly_model(data_path):
     )
 
 
+    # ==========================
     # Entrenamiento
+    # ==========================
 
     model.fit(
         X_train,
@@ -60,14 +83,18 @@ def train_anomaly_model(data_path):
     )
 
 
+    # ==========================
     # Predicción
+    # ==========================
 
     y_pred = model.predict(
         X_test
     )
 
 
+    # ==========================
     # Evaluación
+    # ==========================
 
     print("Accuracy:")
     print(
@@ -93,6 +120,34 @@ def train_anomaly_model(data_path):
             y_test,
             y_pred
         )
+    )
+
+
+    # ==========================
+    # Guardar modelo
+    # ==========================
+
+    os.makedirs(
+        "../models",
+        exist_ok=True
+    )
+
+
+    model_package = {
+        "model": model,
+        "features": feature_names
+    }
+
+
+    joblib.dump(
+        model_package,
+        "../models/anomaly_detector.pkl"
+    )
+
+
+    print(
+        "\nModelo guardado correctamente:"
+        " ../models/anomaly_detector.pkl"
     )
 
 
