@@ -1,0 +1,9 @@
+datasets
+pandas
+huggingface_hub
+matplotlib
+seaborn
+jupyter
+python-dotenv
+langchain
+streamlit
