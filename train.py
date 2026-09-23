@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
+import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
@@ -30,11 +31,11 @@ bad_assets = db_sensors[db_sensors['fault_probability_pct'] >= 10]['asset_id'].u
 
 # Divido el dataset en cadat tipo de máquina para poder analizarlo por separado.
 CNC = assets[:3]
-COM = assets[3:4]  
-CON = assets[4:5]
-GEA = assets[5:6]
+COM = assets[3]  
+CON = assets[4]
+GEA = assets[5]
 MOT = assets[6:8]
-PUM = assets[8:9]
+PUM = assets[8:]
 #print(PUM)
 
 #db_sensors_correct_assets = db_sensors[db_sensors['asset_id'].isin(bad_assets)]
@@ -65,7 +66,8 @@ plt.show()
 '''
 
 # Con la información de correlación, puedo eliminar algunas columnas que no aportan información relevante para el análisis.
-less_columns = [9,14,15,16,17,18,19,22,28,34,39,44,46,49,50]
+#less_columns = [9,14,15,16,17,18,19,22,28,34,39,44,46,49,50]
+less_columns = [16,17,18,19]
 next_db_sensors = new_db_sensors.drop(new_db_sensors.columns[less_columns], axis=1)
 
 # Se confirma una nueva matriz de correlación con las columnas restantes.
@@ -83,36 +85,41 @@ plt.title('Mapa de Calor de Correlación')
 plt.show()
 '''
 
-### ME concentrare en predecir el manteninmiento en las maquinas de CNC ya que es donde hay 
-### mas facilidad de crear el modelo, ya que contiene 2 máquinas con fallas y una 
-### completamente bien, lo que me permite tener un dataset más balanceado y con más información
-### para entrenar el modelo.
+### Para poder hacer que el modelo realice buenas predicciones, necesito que el dataset sea
+### sea mas grande, por lo que opte en concatenar el dataset original (quitando las maquinas
+### para el entrenamiento) y unirlo con las maquinas que tienen fallas para resaltar la
+### información de estas últimas.
 
-db_cnc_train = next_db_sensors[next_db_sensors['asset_id'].isin(CNC[1:3])].reset_index(drop=True)
-db_cnc_test = next_db_sensors[next_db_sensors['asset_id'] == CNC[0]].reset_index(drop=True)
+db_good_assets = next_db_sensors[~next_db_sensors['asset_id'].isin(assets[:8])].reset_index(drop=True)
+db_bad_assets = next_db_sensors[next_db_sensors['asset_id'].isin(bad_assets)].reset_index(drop=True)
+
+#db_cnc_train = next_db_sensors[next_db_sensors['asset_id'].isin(assets[:8])].reset_index(drop=True)
+db_cnc_train = pd.concat([db_good_assets, db_bad_assets], ignore_index=True)
+db_cnc_test = next_db_sensors[next_db_sensors['asset_id'].isin([assets[11]])].reset_index(drop=True)
 
 #print(db_cnc_train.info())
 #print(db_cnc_test.info())
+#print(db_cnc_train.head())
+#print(db_cnc_test.head())
 
-print(db_cnc_train.head())
-print(db_cnc_test.head())
 
-'''
-db_features = next_db_sensors.drop(['asset_id','rul_predicted_hours'], axis=1)
-db_target = next_db_sensors['rul_predicted_hours']
-#db_target2 = new_db_sensors['maintenance_recommendation']
+cnc_features_train = db_cnc_train.drop(['asset_id','observation_timestamp','rul_predicted_hours'], axis=1)
+cnc_target_train = db_cnc_train['rul_predicted_hours']
 
-#db_features = pd.get_dummies(db_features, drop_first=True)
+cnc_features_test = db_cnc_test.drop(['asset_id','observation_timestamp','rul_predicted_hours'], axis=1)
+cnc_target_test = db_cnc_test['rul_predicted_hours']
 
-features_train, features_test, target_train, target_test = train_test_split(db_features, db_target, test_size=0.2, random_state=42)
 
-modelo_cuanti = RandomForestRegressor(random_state=42)
-modelo_cuanti.fit(features_train, target_train)
+modelo_cuanti = RandomForestRegressor(random_state=42,n_estimators=100, max_depth=10, min_samples_split=2, min_samples_leaf=1)
+modelo_cuanti.fit(cnc_features_train, cnc_target_train)
 
-predicciones = modelo_cuanti.predict(features_test)
+predicciones = modelo_cuanti.predict(cnc_features_test)
 
-#print(new_db_sensors.info())
-print(f"MAE (Error Absoluto Medio): {mean_absolute_error(target_test, predicciones):.2f}")
-print(f"RMSE (Raíz del Error Cuadrático Medio): {root_mean_squared_error(target_test, predicciones):.2f}")
-print(f"R² Score (Coeficiente de Determinación): {r2_score(target_test, predicciones):.2f}")
-'''
+
+print(f"MAE (Error Absoluto Medio): {mean_absolute_error(cnc_target_test, predicciones):.2f}")
+print(f"RMSE (Raíz del Error Cuadrático Medio): {root_mean_squared_error(cnc_target_test, predicciones):.2f}")
+print(f"R² Score (Coeficiente de Determinación): {r2_score(cnc_target_test, predicciones):.2f}")
+
+nombre_modelo = 'modelos/modelo_cnc.pkl'
+joblib.dump(modelo_cuanti, nombre_modelo)
+print(f"Modelo guardado en: {nombre_modelo}")
