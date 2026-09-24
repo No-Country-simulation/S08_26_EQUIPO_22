@@ -1,161 +1,376 @@
+# ============================================================
+# predict.py
+# Predicción de anomalías del equipo
+# ============================================================
+
+
+import os
 import joblib
 import pandas as pd
 
 
+
+# ============================================================
+# Ruta absoluta del modelo
+# ============================================================
+
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+
+DEFAULT_MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "models",
+    "anomaly_detector.pkl"
+)
+
+
+
+# ============================================================
+# Cargar modelo
+# ============================================================
+
+
 def load_model(
-    model_path="../models/anomaly_detector.pkl"
+    model_path=DEFAULT_MODEL_PATH
 ):
+
     """
-    Carga el modelo entrenado y sus variables.
+    Carga el modelo entrenado y las features utilizadas.
+
+    Retorna:
+        model
+        features
     """
 
-    model_package = joblib.load(
+
+    package = joblib.load(
         model_path
     )
 
-    model = model_package["model"]
-    features = model_package["features"]
+
+    # El modelo fue guardado como diccionario
+    # con modelo y lista de variables
+
+    if isinstance(package, dict):
+
+        model = package["model"]
+
+        features = package["features"]
+
+
+    else:
+
+        # compatibilidad si se guardó solamente el modelo
+
+        model = package
+
+        features = None
+
+
 
     return model, features
 
 
 
-def get_feature_importance(
-    model,
-    features,
-    top_n=5
-):
-    """
-    Obtiene las variables más importantes
-    utilizadas por el modelo.
-    """
 
-    importance = pd.DataFrame(
-        {
-            "feature": features,
-            "importance": model.feature_importances_
-        }
-    )
-
-
-    importance = importance.sort_values(
-        by="importance",
-        ascending=False
-    )
-
-
-    return importance.head(top_n)
-
+# ============================================================
+# Predicción de anomalía
+# ============================================================
 
 
 def predict_anomaly(
     sensor_data,
-    model_path="../models/anomaly_detector.pkl"
+    model_path=DEFAULT_MODEL_PATH
 ):
+
     """
-    Predice anomalías y genera una respuesta
-    estructurada para aplicaciones y LLM.
+    Ejecuta la predicción del modelo ML.
 
     Entrada:
-    sensor_data -> DataFrame con variables del sensor
+
+        sensor_data:
+            DataFrame con variables del equipo
+
 
     Salida:
-    diccionario con información de diagnóstico
+
+        Diccionario con resultado
     """
 
 
-    # ==========================
+
+    # -------------------------------------
+    # Convertir entrada si viene como dict
+    # -------------------------------------
+
+    if isinstance(
+        sensor_data,
+        dict
+    ):
+
+
+        sensor_data = pd.DataFrame(
+            [
+                sensor_data
+            ]
+        )
+
+
+
+    # -------------------------------------
     # Cargar modelo
-    # ==========================
+    # -------------------------------------
+
 
     model, features = load_model(
         model_path
     )
 
 
-    # ==========================
+
+    # -------------------------------------
+    # Validar variables
+    # -------------------------------------
+
+
+    missing_features = [
+
+        feature
+
+        for feature in features
+
+        if feature not in sensor_data.columns
+
+    ]
+
+
+
+    if missing_features:
+
+
+        raise ValueError(
+
+            f"Faltan variables requeridas por el modelo: "
+            f"{missing_features}"
+
+        )
+
+
+
+    # -------------------------------------
     # Preparar datos
-    # ==========================
-
-    X = sensor_data[features]
+    # -------------------------------------
 
 
-    # ==========================
+    X = sensor_data[
+        features
+    ]
+
+
+
+    # -------------------------------------
     # Predicción
-    # ==========================
+    # -------------------------------------
+
 
     prediction = model.predict(
         X
     )[0]
 
 
-    probability = model.predict_proba(
-        X
-    )[0]
+
+    # -------------------------------------
+    # Probabilidad
+    # -------------------------------------
 
 
-    anomaly_probability = float(
-        probability[1]
-    )
+    if hasattr(
+        model,
+        "predict_proba"
+    ):
 
 
-    # ==========================
-    # Nivel de riesgo
-    # ==========================
+        probabilities = model.predict_proba(
+            X
+        )[0]
 
-    if anomaly_probability >= 0.8:
-        risk_level = "High"
 
-    elif anomaly_probability >= 0.5:
-        risk_level = "Medium"
+        anomaly_probability = round(
+            float(probabilities[1]),
+            3
+        )
+
 
     else:
+
+
+        anomaly_probability = None
+
+
+
+    # -------------------------------------
+    # Nivel de riesgo
+    # -------------------------------------
+
+
+    if prediction == 1:
+
+
+        if anomaly_probability >= 0.8:
+
+            risk_level = "High"
+
+
+        elif anomaly_probability >= 0.5:
+
+            risk_level = "Medium"
+
+
+        else:
+
+            risk_level = "Low"
+
+
+
+    else:
+
         risk_level = "Low"
 
 
 
-    # ==========================
+    # -------------------------------------
     # Factores principales
-    # ==========================
+    # -------------------------------------
 
-    important_features = get_feature_importance(
+    main_factors = []
+
+
+    if hasattr(
         model,
-        features,
-        top_n=5
-    )
+        "feature_importances_"
+    ):
 
 
-    main_factors = (
-        important_features
-        .to_dict(
-            orient="records"
+        importances = model.feature_importances_
+
+
+
+        ranked = sorted(
+
+            zip(
+                features,
+                importances
+            ),
+
+            key=lambda x:x[1],
+
+            reverse=True
+
         )
-    )
 
 
-    # ==========================
-    # Resultado final
-    # ==========================
+
+        for feature, importance in ranked[:5]:
+
+
+            main_factors.append(
+
+                {
+
+                    "feature": feature,
+
+                    "importance": round(
+
+                        float(importance),
+
+                        4
+
+                    )
+
+                }
+
+            )
+
+
+
+    # -------------------------------------
+    # Resultado
+    # -------------------------------------
+
 
     result = {
 
-        "prediction": int(prediction),
 
-        "status": (
-            "Anomaly detected"
-            if prediction == 1
-            else "Normal operation"
-        ),
+        "prediction":
 
-        "anomaly_probability": round(
+            int(prediction),
+
+
+        "status":
+
+            (
+                "Anomaly detected"
+
+                if prediction == 1
+
+                else
+
+                "Normal operation"
+            ),
+
+
+        "anomaly_probability":
+
             anomaly_probability,
-            4
-        ),
 
-        "risk_level": risk_level,
 
-        "main_factors": main_factors
+        "risk_level":
+
+            risk_level,
+
+
+        "main_factors":
+
+            main_factors
+
     }
 
 
+
     return result
+
+
+
+
+# ============================================================
+# Prueba manual
+# ============================================================
+
+
+if __name__ == "__main__":
+
+
+    test_sensor = {
+
+
+        "vib_kurtosis":0.85,
+
+        "vib_crest_factor":4.2,
+
+        "efficiency_pct":78
+
+    }
+
+
+    print(
+
+        predict_anomaly(
+            test_sensor
+        )
+
+    )
