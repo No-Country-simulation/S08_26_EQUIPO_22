@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 import joblib
 
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score
@@ -90,11 +91,12 @@ plt.show()
 ### para el entrenamiento) y unirlo con las maquinas que tienen fallas para resaltar la
 ### información de estas últimas.
 
+
 db_good_assets = next_db_sensors[~next_db_sensors['asset_id'].isin(assets[:8])].reset_index(drop=True)
-db_bad_assets = next_db_sensors[next_db_sensors['asset_id'].isin(bad_assets)].reset_index(drop=True)
+db_bad_assets = next_db_sensors[next_db_sensors['asset_id'].isin(bad_assets[:-1])].reset_index(drop=True)
 
 #db_cnc_train = next_db_sensors[next_db_sensors['asset_id'].isin(assets[:8])].reset_index(drop=True)
-db_cnc_train = pd.concat([db_good_assets, db_bad_assets], ignore_index=True)
+db_cnc_train = pd.concat([db_good_assets,db_good_assets, db_bad_assets], ignore_index=True)
 db_cnc_test = next_db_sensors[next_db_sensors['asset_id'].isin([assets[11]])].reset_index(drop=True)
 
 #print(db_cnc_train.info())
@@ -109,11 +111,15 @@ cnc_target_train = db_cnc_train['rul_predicted_hours']
 cnc_features_test = db_cnc_test.drop(['asset_id','observation_timestamp','rul_predicted_hours'], axis=1)
 cnc_target_test = db_cnc_test['rul_predicted_hours']
 
+# Escalo los datos para que el modelo pueda aprender mejor.
+scaler = StandardScaler()
+sc_cnc_features_train = scaler.fit_transform(cnc_features_train)
+sc_cnc_features_test = scaler.transform(cnc_features_test)
 
 modelo_cuanti = RandomForestRegressor(random_state=42,n_estimators=100, max_depth=10, min_samples_split=2, min_samples_leaf=1)
-modelo_cuanti.fit(cnc_features_train, cnc_target_train)
+modelo_cuanti.fit(sc_cnc_features_train, cnc_target_train)
 
-predicciones = modelo_cuanti.predict(cnc_features_test)
+predicciones = modelo_cuanti.predict(sc_cnc_features_test)
 
 
 print(f"MAE (Error Absoluto Medio): {mean_absolute_error(cnc_target_test, predicciones):.2f}")
@@ -121,5 +127,5 @@ print(f"RMSE (Raíz del Error Cuadrático Medio): {root_mean_squared_error(cnc_t
 print(f"R² Score (Coeficiente de Determinación): {r2_score(cnc_target_test, predicciones):.2f}")
 
 nombre_modelo = 'modelos/modelo_cnc.pkl'
-joblib.dump(modelo_cuanti, nombre_modelo)
-print(f"Modelo guardado en: {nombre_modelo}")
+#joblib.dump(modelo_cuanti, nombre_modelo)
+#print(f"Modelo guardado en: {nombre_modelo}")
