@@ -1,6 +1,7 @@
 # ============================================================
 # app.py
-# Interfaz Streamlit - Sistema de Mantenimiento Predictivo IA
+# MaintAI Copilot
+# Sistema de Mantenimiento Predictivo IA
 # ============================================================
 
 
@@ -9,20 +10,39 @@ import sys
 import os
 
 
+
 # ============================================================
-# Ajuste de ruta del proyecto
+# Ruta del proyecto
 # ============================================================
 
 
 sys.path.insert(
+
     0,
+
     os.path.abspath(
+
         os.path.dirname(__file__)
+
     )
+
 )
 
 
+
+# ============================================================
+# Importaciones
+# ============================================================
+
+
 from src.pipeline import analyze_equipment
+
+
+from components.styles import load_styles
+
+from components.sidebar import render_sidebar
+
+from components.dashboard import render_dashboard
 
 
 
@@ -33,55 +53,71 @@ from src.pipeline import analyze_equipment
 
 st.set_page_config(
 
-    page_title="Mantenimiento Predictivo IA",
+    page_title="MaintAI Copilot",
 
     page_icon="⚙️",
 
-    layout="centered"
+    layout="wide"
 
 )
 
 
 
 # ============================================================
-# Título
+# Estilos
+# ============================================================
+
+
+st.markdown(
+
+    load_styles(),
+
+    unsafe_allow_html=True
+
+)
+
+
+
+# ============================================================
+# Encabezado
 # ============================================================
 
 
 st.title(
-    "⚙️ Sistema de Mantenimiento Predictivo IA"
+
+    "⚙️ MaintAI Copilot"
+
 )
 
 
 st.write(
-    "Análisis inteligente de condición del equipo usando Machine Learning + LLM"
-)
 
-
-
-# ============================================================
-# Equipo
-# ============================================================
-
-
-equipment = st.text_input(
-
-    "Código del equipo",
-
-    value="MGG001"
+    "Sistema inteligente de mantenimiento predictivo usando Machine Learning + LLM"
 
 )
 
 
 
 # ============================================================
-# Variables sensores
+# Sidebar
+# ============================================================
+
+
+equipment = render_sidebar()
+
+
+
+# ============================================================
+# Entrada variables sensores
 # ============================================================
 
 
 st.subheader(
-    "Datos del equipo"
+
+    "📥 Datos operacionales"
+
 )
+
 
 
 col1, col2 = st.columns(2)
@@ -151,7 +187,7 @@ with col2:
 
 
 # ============================================================
-# Construcción datos sensores
+# Datos sensores
 # ============================================================
 
 
@@ -218,17 +254,21 @@ sensor_data = {
 
 
 # ============================================================
-# Botón análisis
+# Ejecución análisis
 # ============================================================
 
 
 if st.button(
+
     "🔍 Analizar equipo"
+
 ):
 
 
     with st.spinner(
+
         "Analizando condición del equipo..."
+
     ):
 
 
@@ -241,17 +281,22 @@ if st.button(
         )
 
 
-
     st.success(
+
         "Análisis completado"
+
     )
 
 
-    st.subheader(
-        "Resultado"
-    )
+    # ========================================================
+    # Dashboard visual
+    # ========================================================
 
 
-    st.json(
-        result
+    render_dashboard(
+
+        result,
+
+        equipment
+
     )
