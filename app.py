@@ -9,6 +9,8 @@ import streamlit as st
 import sys
 import os
 
+from pathlib import Path
+
 
 
 # ============================================================
@@ -46,6 +48,7 @@ from components.dashboard import render_dashboard
 
 
 
+
 # ============================================================
 # Configuración página
 # ============================================================
@@ -60,6 +63,7 @@ st.set_page_config(
     layout="wide"
 
 )
+
 
 
 
@@ -78,16 +82,41 @@ st.markdown(
 
 
 
+
 # ============================================================
-# Encabezado
+# Encabezado principal
 # ============================================================
 
 
-st.title(
+banner_path = Path(
 
-    "⚙️ MaintAI Copilot"
+    "assets/img2.png"
 
 )
+
+
+
+if banner_path.exists():
+
+
+    st.image(
+
+        str(banner_path),
+
+        use_container_width=True
+
+    )
+
+
+else:
+
+
+    st.title(
+
+        "⚙️ MaintAI Copilot"
+
+    )
+
 
 
 st.write(
@@ -98,12 +127,34 @@ st.write(
 
 
 
+st.divider()
+
+
+
+
+
 # ============================================================
 # Sidebar
 # ============================================================
 
 
 equipment = render_sidebar()
+
+
+
+
+
+# ============================================================
+# Memoria de sesión
+# Evita perder diagnóstico cuando Streamlit hace rerun
+# ============================================================
+
+
+if "result" not in st.session_state:
+
+    st.session_state.result = None
+
+
 
 
 
@@ -186,6 +237,8 @@ with col2:
 
 
 
+
+
 # ============================================================
 # Datos sensores
 # ============================================================
@@ -253,6 +306,8 @@ sensor_data = {
 
 
 
+
+
 # ============================================================
 # Ejecución análisis
 # ============================================================
@@ -272,13 +327,14 @@ if st.button(
     ):
 
 
-        result = analyze_equipment(
+        st.session_state.result = analyze_equipment(
 
             sensor_data,
 
             equipment=equipment
 
         )
+
 
 
     st.success(
@@ -288,14 +344,21 @@ if st.button(
     )
 
 
-    # ========================================================
-    # Dashboard visual
-    # ========================================================
+
+
+
+# ============================================================
+# Dashboard visual
+# Se mantiene aunque Streamlit haga rerun
+# ============================================================
+
+
+if st.session_state.result is not None:
 
 
     render_dashboard(
 
-        result,
+        st.session_state.result,
 
         equipment
 

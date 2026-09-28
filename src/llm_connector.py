@@ -1,177 +1,540 @@
 # ============================================================
 # llm_connector.py
-# Conexión entre diagnóstico predictivo y Ollama LLM
+# MaintAI Copilot + Ollama
 # ============================================================
 
 
 import json
 
+import streamlit as st
+
+import numpy as np
+
+
 from langchain_ollama import ChatOllama
 
 
 
+
+
+# ============================================================
+# Conversión datos ML
+# ============================================================
+
+
+def convert_numpy(obj):
+
+
+    if isinstance(obj, np.generic):
+
+        return obj.item()
+
+
+
+    if isinstance(obj, dict):
+
+        return {
+
+            key: convert_numpy(value)
+
+            for key, value in obj.items()
+
+        }
+
+
+
+
+    if isinstance(obj, list):
+
+        return [
+
+            convert_numpy(item)
+
+            for item in obj
+
+        ]
+
+
+
+    return obj
+
+
+
+
+
+# ============================================================
+# Crear modelo Ollama
+# ============================================================
+
+
+@st.cache_resource
 def create_llm():
-    """
-    Crea la conexión con el modelo local Ollama.
-    """
 
-    llm = ChatOllama(
+
+    return ChatOllama(
+
+
         model="phi3:mini",
+
+
         temperature=0.1,
-        num_predict=400
-    )
-
-    return llm
 
 
-
-def ask_llm(diagnosis):
-    """
-    Envía un diagnóstico enriquecido al modelo LLM.
-
-    Parámetro:
-        diagnosis:
-            Diccionario generado por diagnosis.py
-
-    Retorna:
-        Respuesta técnica generada por Phi-3
-    """
+        num_predict=300,
 
 
-    llm = create_llm()
+        keep_alive="30m"
 
 
-    # Convertimos el diagnóstico a texto JSON
-
-    diagnosis_json = json.dumps(
-        diagnosis,
-        indent=4,
-        ensure_ascii=False
     )
 
 
-    prompt = f"""
 
-Eres un ingeniero experto en mantenimiento predictivo industrial.
 
-Analiza el siguiente diagnóstico generado por un modelo de
-Machine Learning:
 
-=========================
-DIAGNÓSTICO DEL EQUIPO
-=========================
+
+# ============================================================
+# Consulta IA
+# ============================================================
+
+
+def ask_llm(
+
+
+    diagnosis,
+
+
+    question=None,
+
+
+    history=None
+
+
+):
+
+
+    try:
+
+
+        llm = create_llm()
+
+
+
+
+
+        # ------------------------------------
+        # Normalización datos ML
+        # ------------------------------------
+
+
+        diagnosis = convert_numpy(
+
+            diagnosis
+
+        )
+
+
+
+
+        diagnosis_json = json.dumps(
+
+
+            diagnosis,
+
+
+            indent=2,
+
+
+            ensure_ascii=False
+
+
+        )
+
+
+
+
+
+        # ------------------------------------
+        # Información prioritaria del modelo ML
+        # ------------------------------------
+
+
+        prediction = diagnosis.get(
+
+            "prediction",
+
+            {}
+
+        )
+
+
+
+        ml_summary = {
+
+
+            "risk_level": prediction.get(
+
+                "risk_level",
+
+                "No disponible"
+
+            ),
+
+
+            "main_factors": prediction.get(
+
+                "main_factors",
+
+                []
+
+            ),
+
+
+            "anomaly_probability": prediction.get(
+
+                "anomaly_probability",
+
+                "No disponible"
+
+            )
+
+        }
+
+
+
+
+        ml_summary_json = json.dumps(
+
+
+            ml_summary,
+
+
+            indent=2,
+
+
+            ensure_ascii=False
+
+
+        )
+
+
+
+
+
+
+        # ------------------------------------
+        # Historial conversación
+        # ------------------------------------
+
+
+        history_text = ""
+
+
+
+        if history:
+
+
+            history_text = json.dumps(
+
+
+                history[-4:],
+
+
+                ensure_ascii=False
+
+
+            )
+
+
+
+
+
+
+        if question is None:
+
+
+            question = (
+
+                "Realiza un diagnóstico técnico del equipo."
+
+            )
+
+
+
+
+
+
+
+        # ------------------------------------
+        # Prompt MaintAI
+        # ------------------------------------
+
+
+        prompt = f"""
+
+Eres MaintAI Copilot.
+
+Actúa como ingeniero especialista en mantenimiento predictivo industrial.
+
+
+
+Tu función es interpretar resultados de Machine Learning
+
+para apoyar decisiones técnicas de mantenimiento.
+
+
+
+================================
+
+RESULTADO PRIORITARIO DEL MODELO ML
+
+================================
+
+
+{ml_summary_json}
+
+
+
+================================
+
+INFORMACIÓN COMPLETA DEL EQUIPO
+
+================================
+
 
 {diagnosis_json}
 
 
-Genera un informe técnico siguiendo exactamente esta estructura:
+
+================================
+
+HISTORIAL DE CONVERSACIÓN
+
+================================
 
 
-## 1. Estado del equipo
-
-Indica si existe una condición normal o anómala.
+{history_text}
 
 
-## 2. Nivel de riesgo
 
-Explica la criticidad encontrada.
+================================
 
+PREGUNTA DEL USUARIO
 
-## 3. Indicadores principales
-
-Explica las variables que generaron la alerta
-y qué significa cada una.
+================================
 
 
-## 4. Posibles causas técnicas
-
-Relaciona los indicadores con posibles fallas
-mecánicas u operativas.
+{question}
 
 
-## 5. Recomendaciones de inspección
-
-Indica qué debería revisar el personal
-de mantenimiento.
 
 
-## 6. Acción prioritaria
-
-Indica la siguiente acción recomendada.
+Genera una respuesta técnica estructurada:
 
 
-Reglas:
 
-- Usa lenguaje técnico claro.
-- No inventes datos.
-- Utiliza únicamente la información entregada.
-- Responde como un ingeniero de mantenimiento.
+1. Estado actual del equipo.
+
+2. Nivel de riesgo.
+
+3. Variables críticas detectadas.
+
+4. Posibles causas técnicas.
+
+5. Acción recomendada de mantenimiento.
+
+
+
+
+
+Reglas obligatorias:
+
+
+
+- Usa únicamente los datos entregados.
+
+- No inventes mediciones.
+
+- No agregues variables inexistentes.
+
+- Analiza siempre main_factors del modelo ML.
+
+- Si existen factores críticos debes mencionarlos.
+
+- Nunca digas que no existen variables críticas si main_factors contiene información.
+
+- Diferencia entre estado normal del equipo y variables influyentes.
+
+- Responde como ingeniero de mantenimiento industrial.
+
+- No uses HTML.
+
+- No escribas código.
+
+- Sé claro y técnico.
+
+
+
+
+
 
 
 """
 
 
-    response = llm.invoke(
-        prompt
-    )
-
-
-    return response.content
 
 
 
-# ============================================================
-# Prueba independiente
-# ============================================================
 
-if __name__ == "__main__":
-
-
-    diagnosis_test = {
+        # ------------------------------------
+        # Debug prompt
+        # ------------------------------------
 
 
-        "equipment": "MGG001",
+        print(
 
-        "condition":
-            "Anomaly detected",
+            "\n===== PROMPT ENVIADO A OLLAMA ====="
 
-        "risk_level":
-            "High",
-
-        "confidence":
-            0.97,
+        )
 
 
-        "indicators": {
+        print(
+
+            prompt[:4000]
+
+        )
 
 
-            "vib_kurtosis": {
+        print(
+
+            "===================================\n"
+
+        )
 
 
-                "meaning":
-                    "Indicador estadístico asociado a impactos anormales de vibración.",
 
 
-                "possible_causes":
-                    [
-                        "Desgaste de rodamiento",
-                        "Holguras mecánicas"
-                    ],
 
 
-                "recommended_actions":
-                    [
-                        "Inspección de rodamientos",
-                        "Análisis espectral de vibración"
-                    ]
-            }
-        }
-    }
+
+        # ------------------------------------
+        # Ejecución Ollama
+        # ------------------------------------
 
 
-    result = ask_llm(
-        diagnosis_test
-    )
+        response = llm.invoke(
+
+            prompt
+
+        )
 
 
-    print(result)
+
+
+
+
+
+        # ------------------------------------
+        # Debug respuesta
+        # ------------------------------------
+
+
+        print(
+
+            "\n===== RESPUESTA OLLAMA ====="
+
+        )
+
+
+        print(
+
+            response
+
+        )
+
+
+        print(
+
+            "============================\n"
+
+        )
+
+
+
+
+
+
+
+        # ------------------------------------
+        # Retorno limpio
+        # ------------------------------------
+
+
+        if hasattr(response, "content"):
+
+
+            answer = str(
+
+                response.content
+
+            ).strip()
+
+
+
+            print(
+
+                "===== TEXTO DEVUELTO ====="
+
+            )
+
+
+            print(
+
+                answer
+
+            )
+
+
+            print(
+
+                "=========================="
+
+            )
+
+
+
+            return answer
+
+
+
+
+
+        return str(response).strip()
+
+
+
+
+
+
+
+    except Exception as error:
+
+
+
+        print(
+
+            "ERROR OLLAMA:",
+
+            error
+
+        )
+
+
+
+        return (
+
+            "⚠️ Error conectando con MaintAI: "
+
+            + str(error)
+
+        )

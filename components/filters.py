@@ -1,13 +1,16 @@
 # ============================================================
 # filters.py
-# Filtros dashboard
+# Filtros Dashboard MaintAI Copilot
 # ============================================================
-
 
 
 import streamlit as st
 
 
+
+# ============================================================
+# Render filtros
+# ============================================================
 
 
 def render_filters():
@@ -15,13 +18,19 @@ def render_filters():
 
     st.subheader(
 
-        "🎛️ Filtros"
+        "🎛️ Filtros de análisis"
 
     )
 
 
-    col1,col2,col3 = st.columns(3)
 
+    col1, col2, col3 = st.columns(3)
+
+
+
+    # --------------------------------------------------------
+    # Variable
+    # --------------------------------------------------------
 
 
     with col1:
@@ -29,7 +38,7 @@ def render_filters():
 
         variable = st.selectbox(
 
-            "Variable",
+            "Variable monitoreada",
 
             [
 
@@ -45,10 +54,17 @@ def render_filters():
 
                 "Carga eléctrica"
 
-            ]
+            ],
+
+            key="variable_filter"
 
         )
 
+
+
+    # --------------------------------------------------------
+    # Periodo
+    # --------------------------------------------------------
 
 
     with col2:
@@ -62,16 +78,23 @@ def render_filters():
 
                 "Actual",
 
-                "24 horas",
+                "Últimas 24 horas",
 
-                "7 días",
+                "Últimos 7 días",
 
-                "30 días"
+                "Último mes"
 
-            ]
+            ],
+
+            key="periodo_filter"
 
         )
 
+
+
+    # --------------------------------------------------------
+    # Riesgo
+    # --------------------------------------------------------
 
 
     with col3:
@@ -79,7 +102,7 @@ def render_filters():
 
         riesgo = st.selectbox(
 
-            "Riesgo",
+            "Nivel de riesgo",
 
             [
 
@@ -91,10 +114,17 @@ def render_filters():
 
                 "Alto"
 
-            ]
+            ],
+
+            key="riesgo_filter"
 
         )
 
+
+
+    # --------------------------------------------------------
+    # Retorno filtros
+    # --------------------------------------------------------
 
 
     return {
@@ -102,8 +132,11 @@ def render_filters():
 
         "variable": variable,
 
+
         "periodo": periodo,
 
+
         "riesgo": riesgo
+
 
     }

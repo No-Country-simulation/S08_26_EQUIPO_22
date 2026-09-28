@@ -1,13 +1,13 @@
 # ============================================================
 # dashboard.py
-# Dashboard Industrial MaintAI Copilot
+# Dashboard principal MaintAI Copilot
 # ============================================================
 
 
 import streamlit as st
 
+from pathlib import Path
 
-# Componentes internos
 
 from components.kpis import render_kpis
 
@@ -26,6 +26,11 @@ from components.charts import (
 )
 
 
+from components.chat import render_chat
+
+
+
+
 
 # ============================================================
 # Render Dashboard
@@ -36,31 +41,157 @@ def render_dashboard(result, equipment):
 
 
     """
-    Renderiza el dashboard principal
-    del sistema de mantenimiento predictivo.
+    Interfaz principal MaintAI Copilot
     """
 
 
 
-    try:
+    # ========================================================
+    # Guardar diagnóstico en sesión
+    # ========================================================
 
 
-        # ====================================================
-        # Validación
-        # ====================================================
+    st.session_state["dashboard_result"] = result
+
+    st.session_state["dashboard_equipment"] = equipment
 
 
-        if result is None:
 
 
-            st.warning(
 
-                "No existen resultados del análisis."
+    # ========================================================
+    # BANNER PRINCIPAL
+    # ========================================================
 
-            )
+
+    banner_path = Path(
+
+        "assets/img2.png"
+
+    )
 
 
-            return
+
+    if banner_path.exists():
+
+
+        st.image(
+
+            str(banner_path),
+
+            use_container_width=True
+
+        )
+
+
+
+    st.divider()
+
+
+
+
+
+    # ========================================================
+    # KPIs
+    # ========================================================
+
+
+    render_kpis(
+
+        result,
+
+        equipment
+
+    )
+
+
+
+    st.write("")
+
+
+
+
+
+    # ========================================================
+    # DISTRIBUCIÓN PRINCIPAL
+    # ========================================================
+
+
+    dashboard_col, chat_col = st.columns(
+
+        [7,5],
+
+        gap="large"
+
+    )
+
+
+
+
+
+    # ========================================================
+    # DASHBOARD ANALÍTICO
+    # ========================================================
+
+
+    with dashboard_col:
+
+
+
+        st.subheader(
+
+            "📊 Monitor del activo"
+
+        )
+
+
+
+
+
+        # -----------------------------
+        # Filtros
+        # -----------------------------
+
+
+        render_filters()
+
+
+
+
+        st.divider()
+
+
+
+
+        # -----------------------------
+        # Tendencia
+        # -----------------------------
+
+
+        st.subheader(
+
+            "📈 Tendencia operacional"
+
+        )
+
+
+        show_sensor_trend()
+
+
+
+
+        st.write("")
+
+
+
+
+
+        # -----------------------------
+        # Factores y riesgo
+        # -----------------------------
+
+
+        col1, col2 = st.columns(2)
 
 
 
@@ -69,125 +200,6 @@ def render_dashboard(result, equipment):
             "prediction",
 
             {}
-
-        )
-
-
-
-        # ====================================================
-        # Encabezado
-        # ====================================================
-
-
-        st.subheader(
-
-            f"📊 Dashboard del equipo {equipment}"
-
-        )
-
-
-
-        st.caption(
-
-            "Sistema inteligente de mantenimiento predictivo basado en Machine Learning + IA"
-
-        )
-
-
-
-        st.divider()
-
-
-
-        # ====================================================
-        # KPIs
-        # ====================================================
-
-
-        render_kpis(
-
-            result,
-
-            equipment
-
-        )
-
-
-
-        st.divider()
-
-
-
-        # ====================================================
-        # FILTROS
-        # ====================================================
-
-
-        filters = render_filters()
-
-
-
-        st.divider()
-
-
-
-        # ====================================================
-        # GRÁFICOS
-        # ====================================================
-
-
-        st.subheader(
-
-            "📈 Análisis operacional"
-
-        )
-
-
-
-        chart1, chart2 = st.columns(2)
-
-
-
-        with chart1:
-
-
-            show_sensor_trend(
-
-                filters=filters
-
-            )
-
-
-
-        with chart2:
-
-
-            show_risk_chart(
-
-                prediction.get(
-
-                    "risk_level",
-
-                    "Low"
-
-                )
-
-            )
-
-
-
-        st.divider()
-
-
-
-        # ====================================================
-        # VARIABLES CRÍTICAS
-        # ====================================================
-
-
-        st.subheader(
-
-            "🔎 Variables críticas detectadas"
 
         )
 
@@ -203,148 +215,124 @@ def render_dashboard(result, equipment):
 
 
 
-        show_factor_importance(
+        risk = prediction.get(
 
-            factors
+            "risk_level",
 
-        )
-
-
-
-        st.divider()
-
-
-
-        # ====================================================
-        # INTERPRETACIÓN IA
-        # ====================================================
-
-
-        st.subheader(
-
-            "🤖 Interpretación inteligente"
+            "Low"
 
         )
 
 
 
-        ai_report = result.get(
 
-            "ai_report"
 
-        )
+        with col1:
 
 
 
-        if ai_report:
+            st.subheader(
 
-
-            st.success(
-
-                ai_report
+                "🧠 Factores críticos"
 
             )
 
 
-        else:
+            show_factor_importance(
 
-
-            st.info(
-
-                "El asistente IA generará la explicación técnica del diagnóstico."
+                factors
 
             )
 
 
 
-        st.divider()
 
 
 
-        # ====================================================
-        # INFORMACIÓN TÉCNICA
-        # ====================================================
-
-
-        with st.expander(
-
-            "⚙️ Información técnica del análisis"
-
-        ):
+        with col2:
 
 
 
-            col1, col2 = st.columns(2)
+            st.subheader(
+
+                "⚠️ Estado del riesgo"
+
+            )
+
+
+            show_risk_chart(
+
+                risk
+
+            )
 
 
 
-            with col1:
-
-
-                st.write(
-
-                    "**Equipo:**",
-
-                    equipment
-
-                )
-
-
-                st.write(
-
-                    "**Estado:**",
-
-                    prediction.get(
-
-                        "status",
-
-                        "N/A"
-
-                    )
-
-                )
 
 
 
-            with col2:
+
+    # ========================================================
+    # CHAT IA
+    # ========================================================
 
 
-                st.write(
-
-                    "**Riesgo:**",
-
-                    prediction.get(
-
-                        "risk_level",
-
-                        "N/A"
-
-                    )
-
-                )
-
-
-                st.write(
-
-                    "**Probabilidad anomalía:**",
-
-                    prediction.get(
-
-                        "anomaly_probability",
-
-                        "N/A"
-
-                    )
-
-                )
+    with chat_col:
 
 
 
-    except Exception as e:
+        st.markdown(
+
+            """
+
+            <div class="ai-card">
+
+            """,
+
+            unsafe_allow_html=True
+
+        )
 
 
-        st.error(
 
-            f"Error renderizando dashboard: {e}"
+        st.markdown(
+
+            "## 🤖 MaintAI Assistant"
+
+        )
+
+
+
+        st.caption(
+
+            f"Copiloto del equipo {equipment}"
+
+        )
+
+
+
+
+
+        render_chat(
+
+            result,
+
+            equipment
+
+        )
+
+
+
+
+
+        st.markdown(
+
+            """
+
+            </div>
+
+            """,
+
+            unsafe_allow_html=True
 
         )

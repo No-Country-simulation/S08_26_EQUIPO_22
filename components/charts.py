@@ -1,17 +1,74 @@
 # ============================================================
 # charts.py
-# Gráficos industriales MaintAI Copilot
+# Gráficos MaintAI Copilot - Dark AI UI
 # ============================================================
 
 
-import plotly.express as px
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 
 
 
 # ============================================================
-# Gráfico importancia factores
+# Configuración visual Plotly
+# ============================================================
+
+
+def apply_theme(fig):
+
+
+    fig.update_layout(
+
+
+        template="plotly_dark",
+
+
+        paper_bgcolor="rgba(0,0,0,0)",
+
+
+        plot_bgcolor="rgba(0,0,0,0)",
+
+
+        font=dict(
+
+            color="#dfe2ef",
+
+            family="Arial"
+
+        ),
+
+
+        margin=dict(
+
+            l=20,
+
+            r=20,
+
+            t=50,
+
+            b=20
+
+        ),
+
+
+        legend=dict(
+
+            bgcolor="rgba(0,0,0,0)"
+
+        )
+
+
+    )
+
+
+    return fig
+
+
+
+
+# ============================================================
+# Importancia variables
 # ============================================================
 
 
@@ -20,9 +77,10 @@ def show_factor_importance(factors):
 
     if not factors:
 
+
         st.info(
 
-            "No existen variables importantes del modelo."
+            "No hay factores disponibles"
 
         )
 
@@ -44,23 +102,43 @@ def show_factor_importance(factors):
 
     fig = px.bar(
 
+
         df,
+
 
         x="importance_pct",
 
+
         y="feature",
+
 
         orientation="h",
 
-        title="Impacto de variables en el diagnóstico",
 
-        labels={
+        title="🧠 Variables influyentes del diagnóstico",
 
-            "importance_pct":"Importancia (%)",
 
-            "feature":"Variable"
+        color="importance_pct",
 
-        }
+
+        color_continuous_scale=[
+
+            "#4cd7f6",
+
+            "#8083ff"
+
+        ]
+
+
+    )
+
+
+
+    fig.update_traces(
+
+
+        marker_line_width=0
+
 
     )
 
@@ -68,11 +146,18 @@ def show_factor_importance(factors):
 
     fig.update_layout(
 
+
         height=350,
 
-        template="plotly_dark"
+
+        coloraxis_showscale=False
+
 
     )
+
+
+
+    fig = apply_theme(fig)
 
 
 
@@ -89,7 +174,7 @@ def show_factor_importance(factors):
 
 
 # ============================================================
-# Gráfico circular riesgo
+# Riesgo donut
 # ============================================================
 
 
@@ -98,26 +183,25 @@ def show_risk_chart(risk):
 
     if risk == "Low":
 
-
-        values = [20,80]
+        value = 25
 
 
     elif risk == "Medium":
 
-
-        values = [50,50]
+        value = 60
 
 
     else:
 
+        value = 90
 
-        values = [80,20]
 
 
 
     df = pd.DataFrame(
 
         {
+
 
             "Estado":[
 
@@ -128,7 +212,13 @@ def show_risk_chart(risk):
             ],
 
 
-            "Valor":values
+            "Valor":[
+
+                value,
+
+                100-value
+
+            ]
 
         }
 
@@ -138,15 +228,31 @@ def show_risk_chart(risk):
 
     fig = px.pie(
 
+
         df,
+
 
         names="Estado",
 
+
         values="Valor",
 
-        hole=0.55,
 
-        title="Estado de riesgo del activo"
+        hole=.72,
+
+
+        title="⚠️ Condición del activo"
+
+
+    )
+
+
+
+    fig.update_traces(
+
+
+        textinfo="none"
+
 
     )
 
@@ -154,9 +260,18 @@ def show_risk_chart(risk):
 
     fig.update_layout(
 
-        template="plotly_dark"
+
+        height=350,
+
+
+        showlegend=True
+
 
     )
+
+
+
+    fig = apply_theme(fig)
 
 
 
@@ -173,11 +288,12 @@ def show_risk_chart(risk):
 
 
 # ============================================================
-# Tendencia sensores con filtros
+# Tendencia sensores
 # ============================================================
 
 
-def show_sensor_trend(filters=None):
+def show_sensor_trend():
+
 
 
     data = pd.DataFrame(
@@ -187,10 +303,19 @@ def show_sensor_trend(filters=None):
 
             "Tiempo":[
 
-                1,2,3,4,5,6
+                "00h",
+
+                "04h",
+
+                "08h",
+
+                "12h",
+
+                "16h",
+
+                "20h"
 
             ],
-
 
 
             "Vibración":[
@@ -210,7 +335,6 @@ def show_sensor_trend(filters=None):
             ],
 
 
-
             "Temperatura":[
 
                 60,
@@ -225,24 +349,6 @@ def show_sensor_trend(filters=None):
 
                 78
 
-            ],
-
-
-
-            "Eficiencia":[
-
-                92,
-
-                89,
-
-                86,
-
-                82,
-
-                80,
-
-                78
-
             ]
 
         }
@@ -251,84 +357,37 @@ def show_sensor_trend(filters=None):
 
 
 
-    # --------------------------------------------------------
-    # Aplicar filtro variable
-    # --------------------------------------------------------
-
-
-    variable = "Todas"
-
-
-
-    if filters:
-
-
-        variable = filters.get(
-
-            "variable",
-
-            "Todas"
-
-        )
-
-
-
-    if variable == "Vibración":
-
-
-        columns = [
-
-            "Vibración"
-
-        ]
-
-
-    elif variable == "Temperatura":
-
-
-        columns = [
-
-            "Temperatura"
-
-        ]
-
-
-    elif variable == "Eficiencia":
-
-
-        columns = [
-
-            "Eficiencia"
-
-        ]
-
-
-    else:
-
-
-        columns = [
-
-            "Vibración",
-
-            "Temperatura",
-
-            "Eficiencia"
-
-        ]
-
-
-
     fig = px.line(
+
 
         data,
 
+
         x="Tiempo",
 
-        y=columns,
+
+        y=[
+
+            "Vibración",
+
+            "Temperatura"
+
+        ],
+
 
         markers=True,
 
-        title=f"Tendencia operacional - {variable}"
+
+        title="📈 Tendencia operacional del equipo"
+
+
+    )
+
+
+
+    fig.update_traces(
+
+        line_width=3
 
     )
 
@@ -336,11 +395,13 @@ def show_sensor_trend(filters=None):
 
     fig.update_layout(
 
-        template="plotly_dark",
-
         height=400
 
     )
+
+
+
+    fig = apply_theme(fig)
 
 
 

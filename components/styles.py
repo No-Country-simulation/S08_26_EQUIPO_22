@@ -8,311 +8,385 @@ def load_styles():
 
     return """
 
-    <style>
+<style>
 
 
-    /* ========================================================
-       CONFIGURACIÓN GENERAL
-    ======================================================== */
+/* ===============================
+   GLOBAL
+================================ */
 
 
-    .stApp {
+.stApp {
 
-        background-color: #0B1220;
+    background:#0f131c;
 
-        color: #F8FAFC;
+    color:#dfe2ef;
 
-    }
+    font-family:
+    "Plus Jakarta Sans",
+    sans-serif;
 
+}
 
 
-    /* ========================================================
-       TÍTULOS
-    ======================================================== */
 
+/* Ocultar elementos Streamlit */
 
-    h1 {
+#MainMenu {
 
-        color: #F8FAFC;
+display:none;
 
-        font-weight: 700;
+}
 
-    }
 
+footer {
 
-    h2 {
+display:none;
 
-        color: #E2E8F0;
+}
 
-        font-weight: 600;
 
-    }
+header {
 
+visibility:hidden;
 
-    h3 {
+}
 
-        color: #CBD5E1;
 
-        font-weight: 600;
 
-    }
+/* ===============================
+   CONTENEDOR PRINCIPAL
+================================ */
 
 
+.block-container {
 
-    /* ========================================================
-       TARJETAS GENERALES
-    ======================================================== */
 
+padding-top:2rem;
 
-    .card {
+padding-left:2rem;
 
+padding-right:2rem;
 
-        background-color: #111827;
+max-width:1400px;
 
 
-        border-radius: 18px;
+}
 
 
-        padding: 20px;
 
+/* ===============================
+   TITULOS
+================================ */
 
-        border: 1px solid #1F2937;
 
+h1,h2,h3 {
 
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.25);
+color:#dfe2ef;
 
+font-weight:700;
 
-    }
+}
 
 
 
-    /* ========================================================
-       TEXTO SECUNDARIO
-    ======================================================== */
+/* ===============================
+   TARJETAS
+================================ */
 
 
-    .subtitle {
+.ai-card {
 
 
-        color: #94A3B8;
+background:#181b25;
 
 
-        font-size: 14px;
+border:
 
+1px solid #31353f;
 
-    }
 
+border-radius:18px;
 
 
-    /* ========================================================
-       TARJETAS KPI DASHBOARD
-    ======================================================== */
+padding:20px;
 
 
-    .metric-card {
+box-shadow:
 
+0 8px 25px rgba(0,0,0,.35);
 
-        background-color: #111827;
 
+}
 
-        border-radius: 16px;
 
 
-        padding: 18px;
+/* ===============================
+   HEADER
+================================ */
 
 
-        border: 1px solid #1E293B;
+.ai-header {
 
 
-    }
+background:#181b25;
 
 
+border-radius:18px;
 
-    .metric-title {
 
+padding:20px;
 
-        color: #94A3B8;
 
+border:
 
-        font-size: 13px;
+1px solid #31353f;
 
 
-    }
+display:flex;
 
 
+justify-content:space-between;
 
-    .metric-value {
 
+align-items:center;
 
-        color: #F8FAFC;
 
+margin-bottom:25px;
 
-        font-size: 28px;
 
+}
 
-        font-weight: 700;
 
 
-    }
+.ai-status {
 
 
+background:#163b2f;
 
-    /* ========================================================
-       CHAT USUARIO
-    ======================================================== */
 
+color:#4edea3;
 
-    .chat-user {
 
+padding:8px 14px;
 
-        background-color: #6366F1;
 
+border-radius:20px;
 
-        color: white;
 
+font-size:13px;
 
-        padding: 14px;
 
+}
 
-        border-radius: 16px;
 
 
-        margin: 10px 0;
+/* ===============================
+   KPI CARDS
+================================ */
 
 
-        text-align: left;
+[data-testid="stMetric"] {
 
 
-    }
+background:#181b25;
 
 
+border-radius:16px;
 
-    /* ========================================================
-       CHAT ASISTENTE IA
-    ======================================================== */
 
+padding:18px;
 
-    .chat-ai {
 
+border:
 
-        background-color: #1E293B;
+1px solid #31353f;
 
 
-        color: #F8FAFC;
+}
 
 
-        padding: 14px;
 
+[data-testid="stMetricLabel"] {
 
-        border-radius: 16px;
 
+color:#8f8fa0;
 
-        margin: 10px 0;
 
+}
 
-        border: 1px solid #334155;
 
 
-    }
+[data-testid="stMetricValue"] {
 
 
+color:#c0c1ff;
 
-    /* ========================================================
-       ESTADO NORMAL
-    ======================================================== */
 
+font-size:32px;
 
-    .status-normal {
 
+font-weight:700;
 
-        color: #22C55E;
 
+}
 
-        font-weight: 700;
 
 
-    }
+/* ===============================
+   INPUTS
+================================ */
 
 
+input {
 
-    /* ========================================================
-       ESTADO ADVERTENCIA
-    ======================================================== */
 
+background:#262a34 !important;
 
-    .status-warning {
 
+color:white !important;
 
-        color: #FACC15;
 
+border-radius:12px !important;
 
-        font-weight: 700;
 
+}
 
-    }
 
 
+.stSelectbox div[data-baseweb="select"] {
 
-    /* ========================================================
-       ESTADO CRÍTICO
-    ======================================================== */
 
+background:#262a34;
 
-    .status-critical {
 
+border-radius:12px;
 
-        color: #EF4444;
 
+}
 
-        font-weight: 700;
 
 
-    }
+/* ===============================
+   BOTONES
+================================ */
 
 
+.stButton button {
 
-    /* ========================================================
-       MÉTRICAS NATIVAS STREAMLIT
-    ======================================================== */
 
+background:
 
-    [data-testid="stMetric"] {
+linear-gradient(
+90deg,
+#8083ff,
+#4cd7f6
+);
 
 
-        background-color: #111827;
+color:#0f131c;
 
 
-        border-radius: 16px;
+border:none;
 
 
-        padding: 15px;
+border-radius:12px;
 
 
-        border: 1px solid #1F2937;
+font-weight:700;
 
 
-    }
+height:42px;
 
 
+}
 
-    /* ========================================================
-       INPUTS
-    ======================================================== */
 
 
-    input {
+.stButton button:hover {
 
 
-        background-color: #111827 !important;
+opacity:.85;
 
 
-        color: white !important;
+}
 
 
-    }
 
+/* ===============================
+   CHAT
+================================ */
 
 
-    </style>
+.chat-box {
 
-    """
+
+background:#181b25;
+
+
+border-radius:18px;
+
+
+padding:20px;
+
+
+height:700px;
+
+
+overflow-y:auto;
+
+
+border:
+
+1px solid #31353f;
+
+
+}
+
+
+
+.chat-user {
+
+
+background:#8083ff;
+
+
+color:#0f131c;
+
+
+padding:12px;
+
+
+border-radius:18px;
+
+
+margin-bottom:10px;
+
+
+}
+
+
+
+.chat-ai {
+
+
+background:#262a34;
+
+
+padding:12px;
+
+
+border-radius:18px;
+
+
+margin-bottom:10px;
+
+
+}
+
+
+
+
+</style>
+
+"""
