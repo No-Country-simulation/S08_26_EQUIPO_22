@@ -1,23 +1,21 @@
-
 <div align="center">
 
 <img src="./industrial_ai_banner.png" width="100%">
 
 <br>
 
-<h1>
-Industrial AI Predictive Maintenance
-</h1>
+# ⚙️ MaintAI Copilot
 
-<h3>
-Machine Learning + LLM for Early Anomaly Detection in Industrial Equipment
-</h3>
+### Intelligent Predictive Maintenance Assistant  
+### Machine Learning + Local LLM for Industrial Equipment Diagnosis
 
 <br>
 
 <p>
-A predictive maintenance solution combining industrial sensor analytics,
-machine learning models and large language models for intelligent fault detection.
+MaintAI Copilot is an intelligent maintenance support system that combines
+machine learning models, industrial sensor analytics and local large language
+models to detect abnormal equipment conditions and generate technical
+maintenance recommendations.
 </p>
 
 <br>
@@ -26,63 +24,53 @@ machine learning models and large language models for intelligent fault detectio
 
 <img src="https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-F7931E?style=for-the-badge">
 
-<img src="https://img.shields.io/badge/LangChain-LLM-1C3C3C?style=for-the-badge">
+<img src="https://img.shields.io/badge/LLM-Ollama%20%2B%20Phi--3-4B8BBE?style=for-the-badge">
 
-<img src="https://img.shields.io/badge/DeepSeek-AI-4B8BBE?style=for-the-badge">
+<img src="https://img.shields.io/badge/LangChain-Integration-1C3C3C?style=for-the-badge">
 
-<img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?style=for-the-badge">
+<img src="https://img.shields.io/badge/Streamlit-Industrial%20Dashboard-FF4B4B?style=for-the-badge">
 
-<table>
-<tr>
-
-<td width="50%">
-
-<h2>Industrial Challenge</h2>
-
-<p>
-Industrial equipment generates thousands of sensor measurements,
-but detecting degradation before failure requires advanced analytics.
-</p>
-
-</td>
-
-<td width="50%">
-
-<h2>AI Solution</h2>
-
-<p>
-A predictive maintenance pipeline capable of identifying anomalies
-and generating intelligent explanations using LLM technology.
-</p>
-
-</td>
-
-</tr>
-</table>
-
-<h2>Dataset Overview</h2>
-
-<table>
-<tr>
-<th>Source</th>
-<th>Description</th>
-</tr>
-
-<tr>
-<td>Equipment Registry</td>
-<td>Industrial asset information</td>
-</tr>
-
-<tr>
-<td>Sensor Data</td>
-<td>Temperature, vibration, pressure and electrical measurements</td>
-</tr>
-
-<tr>
-<td>Failure Events</td>
-<td>Historical failure conditions</td>
-</tr>
-
-</table>
 
 </div>
+
+
+---
+
+# 🚀 Project Overview
+
+Industrial assets generate continuous streams of operational information.
+However, transforming sensor measurements into actionable maintenance
+decisions requires combining predictive analytics with expert interpretation.
+
+MaintAI Copilot integrates Machine Learning and Generative AI to provide:
+
+- Early anomaly identification.
+- Equipment condition assessment.
+- Risk level analysis.
+- Critical variable interpretation.
+- AI-assisted maintenance recommendations.
+
+
+---
+
+# 🏭 Industrial Problem
+
+Traditional maintenance approaches often rely on:
+
+- Fixed maintenance schedules.
+- Manual analysis of measurements.
+- Reactive intervention after failures.
+
+These approaches can increase downtime and reduce equipment availability.
+
+MaintAI Copilot proposes a predictive approach based on:
+
+- Sensor data analysis.
+- Machine Learning diagnosis.
+- Intelligent technical interpretation.
+
+
+---
+
+# 🧠 AI Solution Architecture
+
