@@ -1,7 +1,6 @@
 # ============================================================
 # chat.py
 # Chat IA MaintAI Copilot
-# Versión estable con memoria
 # ============================================================
 
 
@@ -14,6 +13,11 @@ from src.llm_connector import ask_llm
 
 
 
+# ============================================================
+# Render Chat
+# ============================================================
+
+
 def render_chat(diagnosis, equipment):
 
 
@@ -23,10 +27,7 @@ def render_chat(diagnosis, equipment):
 
 
 
-    # ========================================================
-    # Estado conversación
-    # ========================================================
-
+    # Crear memoria
 
     if "chat_history" not in st.session_state:
 
@@ -36,32 +37,7 @@ def render_chat(diagnosis, equipment):
 
 
 
-    # ========================================================
-    # Encabezado
-    # ========================================================
-
-
-    st.markdown(
-
-        "## 🤖 MaintAI Assistant"
-
-    )
-
-
-    st.caption(
-
-        f"Equipo analizado: {equipment}"
-
-    )
-
-
-
-
-
-    # ========================================================
-    # Mostrar historial
-    # ========================================================
-
+    # Historial
 
     for message in st.session_state.chat_history:
 
@@ -71,13 +47,11 @@ def render_chat(diagnosis, equipment):
 
             with st.chat_message("user"):
 
-
                 st.write(
 
                     message["content"]
 
                 )
-
 
 
         else:
@@ -85,7 +59,6 @@ def render_chat(diagnosis, equipment):
 
             with st.chat_message("assistant"):
 
-
                 st.write(
 
                     message["content"]
@@ -97,10 +70,7 @@ def render_chat(diagnosis, equipment):
 
 
 
-
-    # ========================================================
     # Entrada usuario
-    # ========================================================
 
 
     question = st.chat_input(
@@ -115,9 +85,6 @@ def render_chat(diagnosis, equipment):
 
     if question:
 
-
-
-        # Guardar pregunta
 
 
         st.session_state.chat_history.append(
@@ -135,23 +102,12 @@ def render_chat(diagnosis, equipment):
 
 
 
-
         with st.chat_message("user"):
 
-
-            st.write(
-
-                question
-
-            )
+            st.write(question)
 
 
 
-
-
-
-
-        # Generar respuesta
 
 
         with st.chat_message("assistant"):
@@ -177,18 +133,9 @@ def render_chat(diagnosis, equipment):
 
 
 
-            st.write(
-
-                answer
-
-            )
+            st.write(answer)
 
 
-
-
-
-
-        # Guardar respuesta
 
 
         st.session_state.chat_history.append(

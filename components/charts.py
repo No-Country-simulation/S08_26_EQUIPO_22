@@ -1,17 +1,22 @@
 # ============================================================
 # charts.py
-# Gráficos MaintAI Copilot - Dark AI UI
+# Gráficos MaintAI Copilot
+# Dashboard analítico con filtros
 # ============================================================
 
 
 import pandas as pd
+
 import plotly.express as px
+
 import streamlit as st
 
 
 
+
+
 # ============================================================
-# Configuración visual Plotly
+# Tema visual Plotly
 # ============================================================
 
 
@@ -67,8 +72,11 @@ def apply_theme(fig):
 
 
 
+
+
+
 # ============================================================
-# Importancia variables
+# Factores críticos
 # ============================================================
 
 
@@ -80,7 +88,7 @@ def show_factor_importance(factors):
 
         st.info(
 
-            "No hay factores disponibles"
+            "No hay factores críticos disponibles"
 
         )
 
@@ -88,7 +96,24 @@ def show_factor_importance(factors):
 
 
 
+
+
     df = pd.DataFrame(factors)
+
+
+
+    if "importance" not in df.columns:
+
+
+        st.warning(
+
+            "Formato de factores no válido"
+
+        )
+
+        return
+
+
 
 
 
@@ -97,6 +122,8 @@ def show_factor_importance(factors):
         df["importance"] * 100
 
     )
+
+
 
 
 
@@ -115,43 +142,22 @@ def show_factor_importance(factors):
         orientation="h",
 
 
-        title="🧠 Variables influyentes del diagnóstico",
-
-
-        color="importance_pct",
-
-
-        color_continuous_scale=[
-
-            "#4cd7f6",
-
-            "#8083ff"
-
-        ]
+        title="🧠 Variables influyentes del diagnóstico"
 
 
     )
 
 
-
-    fig.update_traces(
-
-
-        marker_line_width=0
-
-
-    )
 
 
 
     fig.update_layout(
 
-
         height=350,
 
+        xaxis_title="Importancia (%)",
 
-        coloraxis_showscale=False
-
+        yaxis_title="Variable"
 
     )
 
@@ -173,27 +179,54 @@ def show_factor_importance(factors):
 
 
 
+
+
+
+
 # ============================================================
-# Riesgo donut
+# Estado de riesgo
 # ============================================================
 
 
 def show_risk_chart(risk):
 
 
-    if risk == "Low":
+    risk_text = str(risk).lower()
+
+
+
+    if risk_text in [
+
+        "low",
+
+        "bajo"
+
+    ]:
+
 
         value = 25
 
 
-    elif risk == "Medium":
+
+    elif risk_text in [
+
+        "medium",
+
+        "medio"
+
+    ]:
+
 
         value = 60
 
 
+
     else:
 
+
         value = 90
+
+
 
 
 
@@ -220,9 +253,12 @@ def show_risk_chart(risk):
 
             ]
 
+
         }
 
     )
+
+
 
 
 
@@ -238,7 +274,7 @@ def show_risk_chart(risk):
         values="Valor",
 
 
-        hole=.72,
+        hole=0.7,
 
 
         title="⚠️ Condición del activo"
@@ -248,30 +284,31 @@ def show_risk_chart(risk):
 
 
 
-    fig.update_traces(
 
+
+    fig.update_traces(
 
         textinfo="none"
 
-
     )
+
+
 
 
 
     fig.update_layout(
 
-
-        height=350,
-
-
-        showlegend=True
-
+        height=350
 
     )
 
 
 
+
+
     fig = apply_theme(fig)
+
+
 
 
 
@@ -287,12 +324,27 @@ def show_risk_chart(risk):
 
 
 
+
+
+
+
 # ============================================================
-# Tendencia sensores
+# Tendencia operacional con filtros
 # ============================================================
 
 
-def show_sensor_trend():
+def show_sensor_trend(
+
+    variable="Todas",
+
+    periodo="Actual"
+
+):
+
+
+    """
+    Gráfico dinámico según filtros seleccionados
+    """
 
 
 
@@ -318,6 +370,7 @@ def show_sensor_trend():
             ],
 
 
+
             "Vibración":[
 
                 3.2,
@@ -333,6 +386,7 @@ def show_sensor_trend():
                 5.2
 
             ],
+
 
 
             "Temperatura":[
@@ -357,31 +411,166 @@ def show_sensor_trend():
 
 
 
-    fig = px.line(
 
 
-        data,
+
+    # --------------------------------------------------------
+    # Aplicación filtros
+    # --------------------------------------------------------
 
 
-        x="Tiempo",
+    if variable == "Vibración":
 
 
-        y=[
 
-            "Vibración",
-
-            "Temperatura"
-
-        ],
+        fig = px.line(
 
 
-        markers=True,
+            data,
 
 
-        title="📈 Tendencia operacional del equipo"
+            x="Tiempo",
 
 
-    )
+            y="Vibración",
+
+
+            markers=True,
+
+
+            title=f"📈 Vibración - {periodo}"
+
+
+        )
+
+
+
+
+
+
+    elif variable == "Temperatura":
+
+
+
+        fig = px.line(
+
+
+            data,
+
+
+            x="Tiempo",
+
+
+            y="Temperatura",
+
+
+            markers=True,
+
+
+            title=f"🌡️ Temperatura - {periodo}"
+
+
+        )
+
+
+
+
+
+
+    elif variable == "Eficiencia":
+
+
+
+        eficiencia = pd.DataFrame(
+
+            {
+
+
+                "Tiempo":data["Tiempo"],
+
+
+                "Eficiencia":[
+
+                    95,
+
+                    92,
+
+                    90,
+
+                    88,
+
+                    85,
+
+                    82
+
+                ]
+
+            }
+
+        )
+
+
+
+
+        fig = px.line(
+
+
+            eficiencia,
+
+
+            x="Tiempo",
+
+
+            y="Eficiencia",
+
+
+            markers=True,
+
+
+            title=f"⚡ Eficiencia - {periodo}"
+
+
+        )
+
+
+
+
+
+
+    else:
+
+
+
+
+        fig = px.line(
+
+
+            data,
+
+
+            x="Tiempo",
+
+
+            y=[
+
+                "Vibración",
+
+                "Temperatura"
+
+            ],
+
+
+            markers=True,
+
+
+            title=f"📈 Tendencia operacional - {periodo}"
+
+
+        )
+
+
+
+
 
 
 
@@ -393,15 +582,28 @@ def show_sensor_trend():
 
 
 
+
+
     fig.update_layout(
 
-        height=400
+
+        height=400,
+
+
+        xaxis_title="Tiempo",
+
+
+        yaxis_title="Valor"
 
     )
 
 
 
+
+
     fig = apply_theme(fig)
+
+
 
 
 

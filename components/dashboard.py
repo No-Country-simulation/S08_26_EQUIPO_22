@@ -9,6 +9,7 @@ import streamlit as st
 from pathlib import Path
 
 
+
 from components.kpis import render_kpis
 
 
@@ -27,6 +28,82 @@ from components.charts import (
 
 
 from components.chat import render_chat
+
+
+
+
+
+# ============================================================
+# Banner principal animado GIF
+# ============================================================
+
+
+def render_banner():
+
+
+    gif_path = Path(
+
+        "assets/img3.gif"
+
+    )
+
+
+    image_path = Path(
+
+        "assets/img2.png"
+
+    )
+
+
+
+    # --------------------------------------------------------
+    # GIF principal
+    # --------------------------------------------------------
+
+
+    if gif_path.exists():
+
+
+        st.image(
+
+            str(gif_path),
+
+            use_container_width=True
+
+        )
+
+
+
+    # --------------------------------------------------------
+    # Imagen respaldo
+    # --------------------------------------------------------
+
+
+    elif image_path.exists():
+
+
+        st.image(
+
+            str(image_path),
+
+            use_container_width=True
+
+        )
+
+
+
+    else:
+
+
+        st.warning(
+
+            "No se encontró assets/img3.gif ni assets/img2.png"
+
+        )
+
+
+
+
 
 
 
@@ -53,6 +130,7 @@ def render_dashboard(result, equipment):
 
     st.session_state["dashboard_result"] = result
 
+
     st.session_state["dashboard_equipment"] = equipment
 
 
@@ -60,28 +138,11 @@ def render_dashboard(result, equipment):
 
 
     # ========================================================
-    # BANNER PRINCIPAL
+    # Banner principal
     # ========================================================
 
 
-    banner_path = Path(
-
-        "assets/img2.png"
-
-    )
-
-
-
-    if banner_path.exists():
-
-
-        st.image(
-
-            str(banner_path),
-
-            use_container_width=True
-
-        )
+    render_banner()
 
 
 
@@ -113,7 +174,7 @@ def render_dashboard(result, equipment):
 
 
     # ========================================================
-    # DISTRIBUCIÓN PRINCIPAL
+    # Distribución principal
     # ========================================================
 
 
@@ -130,7 +191,7 @@ def render_dashboard(result, equipment):
 
 
     # ========================================================
-    # DASHBOARD ANALÍTICO
+    # Dashboard analítico
     # ========================================================
 
 
@@ -148,12 +209,13 @@ def render_dashboard(result, equipment):
 
 
 
-        # -----------------------------
+        # ----------------------------------------------------
         # Filtros
-        # -----------------------------
+        # ----------------------------------------------------
 
 
-        render_filters()
+        filters = render_filters()
+
 
 
 
@@ -163,9 +225,10 @@ def render_dashboard(result, equipment):
 
 
 
-        # -----------------------------
-        # Tendencia
-        # -----------------------------
+
+        # ----------------------------------------------------
+        # Tendencia operacional
+        # ----------------------------------------------------
 
 
         st.subheader(
@@ -175,7 +238,15 @@ def render_dashboard(result, equipment):
         )
 
 
-        show_sensor_trend()
+
+        show_sensor_trend(
+
+            variable=filters["variable"],
+
+            periodo=filters["periodo"]
+
+        )
+
 
 
 
@@ -186,12 +257,14 @@ def render_dashboard(result, equipment):
 
 
 
-        # -----------------------------
+        # ----------------------------------------------------
         # Factores y riesgo
-        # -----------------------------
+        # ----------------------------------------------------
 
 
         col1, col2 = st.columns(2)
+
+
 
 
 
@@ -205,6 +278,8 @@ def render_dashboard(result, equipment):
 
 
 
+
+
         factors = prediction.get(
 
             "main_factors",
@@ -215,6 +290,8 @@ def render_dashboard(result, equipment):
 
 
 
+
+
         risk = prediction.get(
 
             "risk_level",
@@ -222,6 +299,8 @@ def render_dashboard(result, equipment):
             "Low"
 
         )
+
+
 
 
 
@@ -238,11 +317,13 @@ def render_dashboard(result, equipment):
             )
 
 
+
             show_factor_importance(
 
                 factors
 
             )
+
 
 
 
@@ -260,6 +341,7 @@ def render_dashboard(result, equipment):
             )
 
 
+
             show_risk_chart(
 
                 risk
@@ -272,8 +354,9 @@ def render_dashboard(result, equipment):
 
 
 
+
     # ========================================================
-    # CHAT IA
+    # Chat IA
     # ========================================================
 
 
