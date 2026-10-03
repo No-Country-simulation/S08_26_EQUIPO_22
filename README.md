@@ -1,107 +1,146 @@
 <div align="center">
 
-<img src="./industrial_ai_banner.png" width="100%">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./industrial_ai_banner.png">
+  <source media="(prefers-color-scheme: light)" srcset="./industrial_ai_banner.png">
+  <img src="./industrial_ai_banner.png" width="100%" alt="MaintAI Copilot - Predictive Maintenance">
+</picture>
 
-<br>
+<br><br>
 
 # MaintAI Copilot
 
-## Intelligent Predictive Maintenance Assistant
-
-### Machine Learning and Local LLM for Industrial Equipment Diagnosis
-
-<br>
+### Intelligent Predictive Maintenance Assistant
 
 <p>
-MaintAI Copilot is an industrial predictive maintenance assistant that combines
-Machine Learning, sensor data analysis and a local Large Language Model to
-identify abnormal equipment conditions, interpret model results and provide
-technical maintenance recommendations.
+<b>Machine Learning + Local LLM for Industrial Equipment Diagnosis</b>
 </p>
 
 <br>
 
 <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white">
-
 <img src="https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-F7931E?style=for-the-badge">
-
 <img src="https://img.shields.io/badge/LLM-Ollama%20%2B%20Phi--3-4B8BBE?style=for-the-badge">
-
 <img src="https://img.shields.io/badge/LangChain-AI%20Integration-1C3C3C?style=for-the-badge">
-
-<img src="https://img.shields.io/badge/Streamlit-Interactive%20Dashboard-FF4B4B?style=for-the-badge">
-
+<img src="https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white">
 <img src="https://img.shields.io/badge/Plotly-Visualization-3F4F75?style=for-the-badge">
+
+<br><br>
+
+<p>
+MaintAI Copilot is an industrial predictive maintenance assistant that
+combines Machine Learning, sensor analytics and a local Large Language Model
+to identify abnormal equipment conditions, evaluate operational risk,
+interpret predictive results and generate technical maintenance
+recommendations.
+</p>
 
 </div>
 
+---
+
+## Project Overview
+
+MaintAI Copilot is a predictive maintenance platform designed to support
+industrial decision-making through the combination of:
+
+- Machine Learning
+- Industrial sensor analysis
+- Statistical analysis
+- Technical knowledge
+- Local Large Language Models
+- Interactive data visualization
+
+The system receives operational variables from industrial equipment,
+processes them through a Machine Learning prediction pipeline and generates
+a technical diagnosis.
+
+The diagnosis is then provided to a local LLM that interprets the model
+output and communicates the result through a conversational maintenance
+assistant.
+
+The objective is to transform raw equipment measurements into information
+that can support maintenance planning and operational decision-making.
 
 ---
 
-# Overview
+## Industrial Challenge
 
-MaintAI Copilot is a predictive maintenance application designed to support
-industrial decision-making through Machine Learning, operational data
-analysis and generative AI.
+Industrial equipment continuously generates operational data related to
+temperature, vibration, pressure, electrical conditions, load, efficiency
+and lubrication.
 
-The system receives operational variables from industrial equipment, evaluates
-their condition using a Machine Learning model and generates a technical
-diagnosis that can be interpreted through a local LLM assistant.
-
-The main purpose of the project is to transform equipment measurements into
-information that can support maintenance and operational decisions.
-
----
-
-# Industrial Challenge
-
-Industrial equipment generates operational data related to vibration,
-temperature, load, efficiency, electrical conditions and other operating
-variables.
-
-Traditional maintenance processes may rely heavily on periodic inspections
+Traditional maintenance processes can depend heavily on periodic inspections
 and manual interpretation of measurements. This can make it difficult to
-identify abnormal conditions early and increase the risk of unexpected
-downtime.
+identify abnormal operating conditions early and increase the risk of
+unexpected downtime.
 
-MaintAI Copilot approaches this problem through predictive analysis and
-technical interpretation.
+MaintAI Copilot addresses this problem by combining predictive analytics
+with technical interpretation.
 
-| Traditional Maintenance | MaintAI Approach |
-|---|---|
-| Reactive intervention after failures | Predictive equipment monitoring |
-| Manual interpretation of measurements | Automated analysis of operational variables |
-| Limited early-warning capability | Anomaly detection through Machine Learning |
-| Isolated sensor information | Combined analysis of multiple variables |
-| Manual technical interpretation | AI-assisted diagnosis |
+<table>
+<tr>
+<td width="50%" valign="top">
+
+<h3>Traditional Maintenance</h3>
+
+<ul>
+<li>Reactive intervention after failures</li>
+<li>Manual interpretation of measurements</li>
+<li>Limited early-warning capability</li>
+<li>Fragmented sensor information</li>
+<li>High risk of unexpected downtime</li>
+</ul>
+
+</td>
+
+<td width="50%" valign="top">
+
+<h3>MaintAI Approach</h3>
+
+<ul>
+<li>Predictive equipment monitoring</li>
+<li>Automated anomaly identification</li>
+<li>Risk classification</li>
+<li>Multivariable operational analysis</li>
+<li>AI-assisted technical interpretation</li>
+</ul>
+
+</td>
+</tr>
+</table>
 
 ---
 
-# Solution Architecture
+## Solution Architecture
 
-The general workflow of MaintAI Copilot is:
+The general architecture follows a sequential predictive maintenance
+workflow:
 
 ```text
 Industrial Equipment Sensors
             |
             v
-Operational Data
+     Operational Data
             |
             v
-Data Processing
+    Data Preprocessing
             |
             v
-Machine Learning Model
+    Feature Preparation
             |
             v
-Anomaly Detection
+ Machine Learning Prediction
             |
             v
-Technical Diagnosis
+    Anomaly Detection
             |
             v
-MaintAI Copilot
-       LLM + Ollama
+ Technical Diagnosis Layer
             |
             v
-Maintenance Recommendations
+     MaintAI Copilot
+     Local LLM + Ollama
+            |
+            v
+Maintenance Decision Support
